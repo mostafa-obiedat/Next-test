@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
+import dbConnect from '@/app/lib/db';
 import Appointment from '@/app/models/Appointment';
 
 // Helper function to handle params

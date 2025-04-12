@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
+import dbConnect from '@/app/lib/db';
 import Billing from '@/app/models/Billing';
+const mongoose = require("mongoose");
 
 export async function POST(request) {
   await dbConnect();
@@ -9,14 +10,16 @@ export async function POST(request) {
     const { patientId, appointmentId, amount, paymentMethod, paymentDetails } = await request.json();
 
     const newBilling = new Billing({
-      patient: patientId,
-      appointment: appointmentId,
-      totalAmount: amount,
+      patientId: new mongoose.Types.ObjectId(patientId),
+      appointmentId: new mongoose.Types.ObjectId(appointmentId),
+      amount,
       paymentMethod,
       status: 'paid',
       paymentId: paymentDetails.id,
-      paymentDetails
+      paymentDetails,
+      paymentDate: new Date()
     });
+    
 
     const savedBilling = await newBilling.save();
 

@@ -17,7 +17,7 @@ export default function AppointmentsPage() {
       const { data } = await axios.get('/api/appointments');
       setAppointments(data.data);
     } catch (error) {
-      toast.error('Failed to fetch appointments');
+      toast.error('فشل في جلب المواعيد');
       console.error(error);
     } finally {
       setLoading(false);
@@ -42,69 +42,73 @@ export default function AppointmentsPage() {
     try {
       if (selectedAppointment) {
         await axios.put(`/api/appointments/${selectedAppointment._id}`, formData);
-        toast.success('Appointment updated successfully');
+        toast.success('تم تحديث الموعد بنجاح');
       } else {
-        console.log('Creating appointment with data:', formData); // Add this line
+        console.log('إنشاء موعد بالبيانات:', formData);
         const response = await axios.post('/api/appointments', formData);
-        console.log('Response:', response); // Add this line
-        toast.success('Appointment created successfully');
+        console.log('الاستجابة:', response);
+        toast.success('تم إنشاء الموعد بنجاح');
       }
       setShowForm(false);
       fetchAppointments();
     } catch (error) {
-      console.error('Full error:', error); // Add this line
-      console.error('Error response:', error.response); // Add this line
-      toast.error(error.response?.data?.error || 'Something went wrong');
+      console.error('خطأ كامل:', error);
+      console.error('استجابة الخطأ:', error.response);
+      toast.error(error.response?.data?.error || 'حدث خطأ ما');
     }
   };
 
   const handleStatusChange = async (id, status) => {
     try {
       await axios.put(`/api/appointments/status/${id}`, { status });
-      toast.success('Status updated successfully');
+      toast.success('تم تحديث الحالة بنجاح');
       fetchAppointments();
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Failed to update status');
+      toast.error(error.response?.data?.error || 'فشل في تحديث الحالة');
     }
   };
 
   const handleDelete = async (id) => {
     try {
       await axios.delete(`/api/appointments/${id}`);
-      toast.success('Appointment deleted successfully');
+      toast.success('تم حذف الموعد بنجاح');
       fetchAppointments();
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Failed to delete appointment');
+      toast.error(error.response?.data?.error || 'فشل في حذف الموعد');
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Appointments</h1>
+    <div className="container mx-auto px-4 py-8 bg-pink-50" dir="rtl">
+      <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-sm">
+        <h1 className="text-2xl font-bold text-gray-800">المواعيد</h1>
         <button
           onClick={handleCreate}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+          className="bg-pink-600 hover:bg-pink-500 text-white px-4 py-2 rounded-md transition duration-300 shadow-sm"
         >
-          Create Appointment
+          إضافة موعد جديد
         </button>
       </div>
 
       {showForm && (
-        <AppointmentForm
-          appointment={selectedAppointment}
-          onSubmit={handleFormSubmit}
-          onCancel={() => setShowForm(false)}
-        />
+        <div className="mb-6 bg-pink p-6 rounded-lg shadow-md border border-gray-200">
+          <AppointmentForm
+            appointment={selectedAppointment}
+            onSubmit={handleFormSubmit}
+            onCancel={() => setShowForm(false)}
+          />
+        </div>
       )}
 
-      <AppointmentList
-        appointments={appointments}
-        loading={loading}
-        onEdit={handleEdit}
-        onStatusChange={handleStatusChange}
-        onDelete={handleDelete}
-      />
+      <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        <AppointmentList
+          appointments={appointments}
+          loading={loading}
+          onEdit={handleEdit}
+          onStatusChange={handleStatusChange}
+          onDelete={handleDelete}
+        />
+      </div>
     </div>
   );
 }
